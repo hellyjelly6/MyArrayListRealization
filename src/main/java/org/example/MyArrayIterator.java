@@ -13,7 +13,6 @@ import java.util.Iterator;
 public class MyArrayIterator<E> implements Iterator<E> {
     private int index = 0;
     private E[] values;
-    private boolean canRemove = false;
 
     /**
      * Constructor for MyArrayIterator.

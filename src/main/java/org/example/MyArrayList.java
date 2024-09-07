@@ -8,11 +8,11 @@ import java.util.Objects;
 /**
  * Realization of a dynamic array with sorting capabilities.
  * <p>
- * This class extends {@link MyQuickSort} and implements {@link MySimpleArray} and {@link Resizable} interfaces.
+ * This class extends {@link MyQuickSort} and implements {@link MySimpleArray} interface.
  *
  * @param <E> the type of elements in this list, must implement {@link Comparable}
  */
-public class MyArrayList<E extends Comparable<E>> extends MyQuickSort<E> implements MySimpleArray<E>, Resizable<E>{
+public class MyArrayList<E> extends MyQuickSort<E> implements MySimpleArray<E>{
     private static final int DEFAULT_CAPACITY = 10;
     private int size;
 
@@ -26,9 +26,9 @@ public class MyArrayList<E extends Comparable<E>> extends MyQuickSort<E> impleme
      */
     public MyArrayList(int initialCapacity){
         if(initialCapacity>0)
-            this.array = (E[]) new Comparable[initialCapacity];
+            this.array = (E[]) new Object[initialCapacity];
         else if(initialCapacity == 0)
-            this.array = (E[]) new Comparable[DEFAULT_CAPACITY];
+            this.array = (E[]) new Object[DEFAULT_CAPACITY];
         else
             throw new IllegalArgumentException("Illegal capacity value");
     }
@@ -37,7 +37,7 @@ public class MyArrayList<E extends Comparable<E>> extends MyQuickSort<E> impleme
      * Constructs a new list with the default capacity.
      */
     public MyArrayList(){
-         this.array = (E[]) new Comparable[DEFAULT_CAPACITY];
+         this.array = (E[]) new Object[DEFAULT_CAPACITY];
     }
 
     /**
@@ -113,7 +113,7 @@ public class MyArrayList<E extends Comparable<E>> extends MyQuickSort<E> impleme
     @Override
     public boolean clear() {
             size = 0;
-            this.array = (E[]) new Comparable[DEFAULT_CAPACITY];
+            this.array = (E[]) new Object[DEFAULT_CAPACITY];
             return true;
     }
 
@@ -123,7 +123,18 @@ public class MyArrayList<E extends Comparable<E>> extends MyQuickSort<E> impleme
     @Override
     public void sort() {
         if (size > 0) {
-            MyQuickSort.quickSort(array, 0, size - 1);
+            if (array[0] instanceof Comparable) {
+                Comparable<E>[] comparableArray = (Comparable<E>[]) new Comparable[size];
+                System.arraycopy(array, 0, comparableArray, 0, size);
+
+                // Sort the new array
+                MyQuickSort.quickSort(comparableArray, 0, size - 1);
+
+                // Copy the sorted elements back to the original array
+                System.arraycopy(comparableArray, 0, array, 0, size);
+            } else {
+                throw new UnsupportedOperationException("Elements must be Comparable to use this sort method");
+            }
         }
     }
 
@@ -189,7 +200,6 @@ public class MyArrayList<E extends Comparable<E>> extends MyQuickSort<E> impleme
      * @return the new resized array
      * @throws IllegalArgumentException if an invalid operation is specified
      */
-    @Override
     public E[] resize(E[] oldArray, String operation) {
         int len = oldArray.length;
         int newLen;
@@ -202,7 +212,7 @@ public class MyArrayList<E extends Comparable<E>> extends MyQuickSort<E> impleme
         }
 
         try {
-            E[] newArray = (E[]) new Comparable[newLen];
+            E[] newArray = (E[]) new Object[newLen];
             System.arraycopy(oldArray, 0, newArray, 0, size);
             return newArray;
         }

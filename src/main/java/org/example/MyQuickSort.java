@@ -24,14 +24,14 @@ public class MyQuickSort<E> {
      * @param <E> the type of elements in the array
      * @return the sorted array
      */
-    public static <E extends Comparable<E>> E[] quickSort(E[] arr, int left, int right){
+    public static <E> E[] quickSort(Comparable<E>[] arr, int left, int right){
         if(left < right){
             int pivot = partition(arr, left, right);
 
             quickSort(arr, left, pivot-1);
             quickSort(arr, pivot+1, right);
         }
-        return arr;
+        return (E[]) arr;
     }
 
     /**
@@ -47,19 +47,19 @@ public class MyQuickSort<E> {
      * @param <E> the type of elements in the array
      * @return the index of the pivot element after partitioning
      */
-    public static <E extends Comparable<E>> int partition(E[] arr, int left, int right){
+    public static <E> int partition(Comparable<E>[] arr, int left, int right){
 
-        E pivot = arr[right];
+        Comparable pivot = arr[right];
         int i = left -1;
         for(int j = left; j< right; j++){
-            if(arr[j].compareTo(pivot)<0){
+            if(arr[j].compareTo((E) pivot)<0){
                 i++;
-                E temp = arr[i];
+                Comparable temp = arr[i];
                 arr[i]= arr[j];
                 arr[j] = temp;
             }
         }
-        E temp = arr[i+1];
+        Comparable temp = arr[i+1];
         arr[i+1] = arr[right];
         arr[right] = temp;
         return i+1;
